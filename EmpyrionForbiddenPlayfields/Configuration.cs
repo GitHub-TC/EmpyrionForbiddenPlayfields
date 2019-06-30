@@ -27,6 +27,8 @@ namespace EmpyrionForbiddenPlayfields
     {
         [JsonConverter(typeof(StringEnumConverter))]
         public LogLevel LogLevel { get; set; } = LogLevel.Message;
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PermissionType FreeTravelPermision { get; set; } = PermissionType.GameMaster;
         public ForbiddenPlayfield[] ForbiddenPlayfields { get; set; } = new[]{ new ForbiddenPlayfield() {
                 FactionInfo  = new[] { new AllowedFaction() },
                 PlayerInfo   = new[] { new AllowedPlayer () },

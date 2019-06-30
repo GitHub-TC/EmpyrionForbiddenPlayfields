@@ -84,13 +84,15 @@ namespace EmpyrionForbiddenPlayfields
 
         private bool CheckForForbiddenPlayfield(PlayerInfo player)
         {
+            if (player.permission >= (int)Configuration.Current.FreeTravelPermision) return true;
+
             var checkplayfield = Configuration.Current.ForbiddenPlayfields.FirstOrDefault(P => P.Name == player.playfield);
             if (checkplayfield == null) return true;
 
             var faction = FactionData?.factions?.FirstOrDefault(F => F.factionId == player.factionId);
             if (faction.HasValue &&
                 checkplayfield.FactionInfo != null && 
-                checkplayfield.FactionInfo.Any(F => F.Abbr == faction.Value.abbrev?.Trim())) return true;
+                checkplayfield.FactionInfo.Any(F => string.Compare(F.Abbr, faction.Value.abbrev?.Trim(), StringComparison.InvariantCultureIgnoreCase) == 0)) return true;
 
             var checkplayer = checkplayfield.PlayerInfo?.FirstOrDefault(P => P.SteamId == player.steamId);
             if (checkplayer != null)
@@ -103,7 +105,7 @@ namespace EmpyrionForbiddenPlayfields
                 return true;
             }
 
-            checkplayer = checkplayfield.PlayerInfo?.FirstOrDefault(P => P.Name == player.playerName);
+            checkplayer = checkplayfield.PlayerInfo?.FirstOrDefault(P => string.Compare(P.Name, player.playerName.Trim(), StringComparison.InvariantCultureIgnoreCase) == 0);
             if (checkplayer != null)
             {
                 if (string.IsNullOrEmpty(checkplayer.SteamId))
