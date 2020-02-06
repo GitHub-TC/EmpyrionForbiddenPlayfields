@@ -32,7 +32,7 @@ namespace EmpyrionForbiddenPlayfields
             DediAPI = dediAPI;
             LogLevel = LogLevel.Message;
 
-            log($"**EmpyrionForbiddenPlayfields: loaded");
+            Log($"**EmpyrionForbiddenPlayfields: loaded");
 
             LoadConfiuration();
             LogLevel = Configuration.Current.LogLevel;
@@ -64,7 +64,7 @@ namespace EmpyrionForbiddenPlayfields
             }
             catch (Exception error)
             {
-                log($"TestNextPlayer: {error}", LogLevel.Debug);
+                Log($"TestNextPlayer: {error}", LogLevel.Debug);
             }
         }
 
@@ -78,7 +78,7 @@ namespace EmpyrionForbiddenPlayfields
             }
             catch (System.Exception error)
             {
-                log($"UpdateFactionData: {error}", LogLevel.Debug);
+                Log($"UpdateFactionData: {error}", LogLevel.Debug);
             }
         }
 
@@ -123,7 +123,11 @@ namespace EmpyrionForbiddenPlayfields
                     PlayerAlerts.TryAdd(player.steamId,
                         TaskTools.Intervall(10000, () =>
                         {
-                            Request_InGameMessage_SinglePlayer(Timeouts.NoResponse, $"Please leave this playfield '{player.playfield}', it is reserved!".ToIdMsgPrio(player.entityId, MessagePriorityType.Alarm, 5));
+                            Request_InGameMessage_SinglePlayer(Timeouts.NoResponse, 
+                                (string.IsNullOrEmpty(checkplayfield.CustomMessage) ? $"Please leave this playfield '{player.playfield}', it is reserved!" : checkplayfield.CustomMessage)
+                                .ToIdMsgPrio(player.entityId,
+                                checkplayfield.MessageType   ?? Configuration.Current.MessageType,
+                                checkplayfield.RepeatSeconds ?? Configuration.Current.RepeatSeconds));
                             CheckPlayerLocation(player.entityId).Wait();
                         })
                     );
@@ -139,7 +143,18 @@ namespace EmpyrionForbiddenPlayfields
         {
             Configuration = new ConfigurationManager<Configuration>
             {
-                ConfigFilename = Path.Combine(EmpyrionConfiguration.SaveGameModPath, @"Configuration.json")
+                ConfigFilename = Path.Combine(EmpyrionConfiguration.SaveGameModPath, @"Configuration.json"),
+                CreateDefaults = (c) => {
+                    c.ForbiddenPlayfields = new[] {
+                    new ForbiddenPlayfield(){ 
+                        Name            = "Name of the playfield",
+                        CustomMessage   = "override default message with custom message",
+                        RepeatSeconds   = 10,
+                        MessageType     = MessagePriorityType.Info,
+                        PlayerInfo      = new []{ new AllowedPlayer () { SteamId = "steamid", Name="ingame name"  } },
+                        FactionInfo     = new []{ new AllowedFaction() { Abbr = "faction abbrev" } },
+                    } };
+                }
             };
 
             Configuration.Load();

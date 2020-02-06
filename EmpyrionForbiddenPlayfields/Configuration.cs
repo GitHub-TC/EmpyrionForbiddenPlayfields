@@ -8,6 +8,10 @@ namespace EmpyrionForbiddenPlayfields
     {
         public string Name { get; set; }
         public string WarpBackTo { get; set; }
+        public string CustomMessage { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public MessagePriorityType? MessageType { get; set; }
+        public int? RepeatSeconds { get; set; }
         public AllowedPlayer[] PlayerInfo { get; set; }
         public AllowedFaction[] FactionInfo { get; set; }
     }
@@ -29,6 +33,9 @@ namespace EmpyrionForbiddenPlayfields
         public LogLevel LogLevel { get; set; } = LogLevel.Message;
         [JsonConverter(typeof(StringEnumConverter))]
         public PermissionType FreeTravelPermision { get; set; } = PermissionType.GameMaster;
+        [JsonConverter(typeof(StringEnumConverter))]
+        public MessagePriorityType MessageType { get; set; } = MessagePriorityType.Alarm;
+        public int RepeatSeconds { get; set; } = 5;
         public ForbiddenPlayfield[] ForbiddenPlayfields { get; set; } = new[]{ new ForbiddenPlayfield() {
                 FactionInfo  = new[] { new AllowedFaction() },
                 PlayerInfo   = new[] { new AllowedPlayer () },
