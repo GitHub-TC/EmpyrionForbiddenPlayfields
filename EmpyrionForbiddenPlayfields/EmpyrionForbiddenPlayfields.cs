@@ -32,7 +32,7 @@ namespace EmpyrionForbiddenPlayfields
             DediAPI = dediAPI;
             LogLevel = LogLevel.Message;
 
-            Log($"**EmpyrionForbiddenPlayfields: loaded");
+            Log($"**EmpyrionForbiddenPlayfields: loaded", LogLevel.Message);
 
             LoadConfiuration();
             LogLevel = Configuration.Current.LogLevel;
