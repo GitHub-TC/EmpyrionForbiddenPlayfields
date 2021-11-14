@@ -123,8 +123,7 @@ namespace EmpyrionForbiddenPlayfields
                     PlayerAlerts.TryAdd(player.steamId,
                         TaskTools.Intervall(10000, () =>
                         {
-                            Request_InGameMessage_SinglePlayer(Timeouts.NoResponse, 
-                                (string.IsNullOrEmpty(checkplayfield.CustomMessage) ? $"Please leave this playfield '{player.playfield}', it is reserved!" : checkplayfield.CustomMessage)
+                            Request_InGameMessage_SinglePlayer((string.IsNullOrEmpty(checkplayfield.CustomMessage) ? $"Please leave this playfield '{player.playfield}', it is reserved!" : checkplayfield.CustomMessage)
                                 .ToIdMsgPrio(player.entityId,
                                 checkplayfield.MessageType   ?? Configuration.Current.MessageType,
                                 checkplayfield.RepeatSeconds ?? Configuration.Current.RepeatSeconds));
